@@ -24,12 +24,12 @@ li {
   font-family: fantasy, cursive;
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
 
   .info-block{
     text-align: center;
   }
-  
+
 }
 
 .main-content {
@@ -41,7 +41,7 @@ li {
 .task__input {
   width: 56%;
   display: inline-block;
-  flex-grow: 1
+  flex-grow: 1;
 }
 
 .new-task__row-wrapper {
@@ -123,7 +123,7 @@ li {
 }
 
 .task__input {
-  width: 226px
+  width: 226px;
 }
 
 .delete-button__image {
@@ -138,7 +138,8 @@ li {
 
 /* Completed */
 .task__label_completed {
-  text-decoration: line-through color: #888;
+  text-decoration: line-through;
+  color: #888;
 }
 
 /* Edit Task */
