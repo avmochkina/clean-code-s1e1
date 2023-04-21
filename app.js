@@ -12,6 +12,7 @@ const taskInput = document.querySelector(".task__input_new-task");
 const addButton = document.querySelector(".task__add-button");
 const uncompleteTaskHolder = document.querySelector(".task-list_uncompleted");
 const completedTasksHolder = document.querySelector(".task-list_completed");
+const editButtons = document.querySelectorAll(".task__edit-button");
 
 //New task list item
 const createNewTaskElement = function (taskString) {
@@ -41,37 +42,30 @@ const addTask = function () {
 }
 
 addButton.addEventListener("click", addTask);
-/*
+
 //Edit an existing task.
 
 const editTask = function () {
-  console.log("Edit Task...");
-  console.log("Change 'edit' to 'save'");
-
 
   const listItem = this.parentNode;
+  const labelText = listItem.querySelector('label').innerHTML
+  listItem.id = 'edited-task';
+  listItem.innerHTML = 
+    `<input class="task__checkbox" type="checkbox">
+    <label class="task__label">${labelText}</label>
+    <input type="text" value="${labelText}" class="task__input">
+    <button class="task__edit-button button">Save</button>
+    <button class="task__delete-button button">
+      <img src="./remove.svg" class="delete-button__image" alt="Delete button">
+    </button>`;
+  return listItem;
 
-  const editInput = listItem.querySelector('input[type=text]');
-  const label = listItem.querySelector("label");
-  const editBtn = listItem.querySelector(".edit");
-  const containsClass = listItem.classList.contains("editMode");
-  //If class of the parent is .editmode
-  if (containsClass) {
-
-    //switch to .editmode
-    //label becomes the inputs value.
-    label.innerText = editInput.value;
-    editBtn.innerText = "Edit";
-  } else {
-    editInput.value = label.innerText;
-    editBtn.innerText = "Save";
-  }
-
-  //toggle .editmode on the parent.
-  listItem.classList.toggle("editMode");
 };
 
-
+editButtons.forEach(function(button) {
+  button.addEventListener("click", editTask);
+});
+/*
 //Delete task.
 const deleteTask = function () {
   console.log("Delete Task...");
