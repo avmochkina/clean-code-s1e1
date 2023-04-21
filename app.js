@@ -1,42 +1,30 @@
-//Document is the DOM can be accessed in the console with document.window.
-// Tree is from the top, html, body, p etc.
-
-//Problem: User interaction does not provide the correct results.
-//Solution: Add interactivity so the user can manage daily tasks.
-//Break things down into smaller steps and take each step at a time.
-
-
-// Event handling, user interaction is what starts the code execution.
-
 const taskInput = document.querySelector(".task__input_new-task");
 const addButton = document.querySelector(".task__add-button");
 const uncompleteTaskHolder = document.querySelector(".task-list_uncompleted");
 const completedTasksHolder = document.querySelector(".task-list_completed");
-const editButtons = document.querySelectorAll(".task__edit-button");
 
 //New task list item
 const createNewTaskElement = function (taskString) {
   
-  const listItem = document.createElement("li");
-  listItem.className = 'task-list__item task';
-  listItem.id = 'uncompleted-task';
-  listItem.innerHTML = 
-    `<input class="task__checkbox" type="checkbox">
+  const listItemHTML = 
+  `<li class="task-list__item task" id="uncompleted-task">
+    <input class="task__checkbox" type="checkbox">
     <label class="task__label">${taskString}</label>
     <input type="text" class="task__input">
     <button class="task__edit-button button">Edit</button>
     <button class="task__delete-button button">
-      <img src="./remove.svg" class="delete-button__image" alt="Delete button">
-    </button>`;
-  return listItem;
+    <img src="./remove.svg" class="delete-button__image" alt="Delete button">
+    </button>
+  </li>`;
+  
+  uncompleteTaskHolder.insertAdjacentHTML('beforeend', listItemHTML);
 
 }
 
 const addTask = function () {
 
   if (!taskInput.value) return;
-  const listItem = createNewTaskElement(taskInput.value);
-  uncompleteTaskHolder.appendChild(listItem);
+  createNewTaskElement(taskInput.value);
   taskInput.value = "";
   
 }
@@ -44,11 +32,10 @@ const addTask = function () {
 addButton.addEventListener("click", addTask);
 
 //Edit an existing task.
+const editTask = function(e) {
 
-const editTask = function () {
-
-  const listItem = this.parentNode;
-  const labelText = listItem.querySelector('label').innerHTML
+  const listItem = e.target.closest('.task-list__item');
+  const labelText = listItem.querySelector('.task__label').innerText;
   listItem.id = 'edited-task';
   listItem.innerHTML = 
     `<input class="task__checkbox" type="checkbox">
@@ -62,22 +49,28 @@ const editTask = function () {
 
 };
 
-editButtons.forEach(function(button) {
-  button.addEventListener("click", editTask);
-});
-/*
+
 //Delete task.
-const deleteTask = function () {
-  console.log("Delete Task...");
-
-  const listItem = this.parentNode;
-  const ul = listItem.parentNode;
+const deleteTask = function (e) {
+  
+  const listItem = e.target.closest('.task-list__item');
   //Remove the parent list item from the ul.
-  ul.removeChild(listItem);
-
+  setTimeout(function() {
+    listItem.parentNode.removeChild(listItem);
+  }, 500);
+  
 }
+document.addEventListener('click', function(e) {
+  
+  // Check if the event target is an edit button
+  if (e.target.classList.contains('task__edit-button')) {
+    editTask(e);
+  } else if( e.target.classList.contains('task__delete-button') || e.target.classList.contains('delete-button__image')) {
+    deleteTask(e)
+  }
+});
 
-
+/*
 //Mark task completed
 const taskCompleted = function () {
   console.log("Complete Task...");
