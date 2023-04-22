@@ -23,7 +23,7 @@ const createNewTaskElement = function (taskString) {
 
 const addTask = function () {
 
-  if (!taskInput.value) return;
+  if (!taskInput.value & taskInput.value === ' ') return;
   createNewTaskElement(taskInput.value);
   taskInput.value = "";
   
@@ -33,77 +33,87 @@ addButton.addEventListener("click", addTask);
 
 //Edit an existing task.
 const editTask = function(e) {
-
   const listItem = e.target.closest('.task-list__item');
   const labelText = listItem.querySelector('.task__label').innerText;
-  listItem.id = 'edited-task';
-  listItem.innerHTML = 
-    `<input class="task__checkbox" type="checkbox">
-    <label class="task__label">${labelText}</label>
-    <input type="text" value="${labelText}" class="task__input">
-    <button class="task__edit-button button">Save</button>
-    <button class="task__delete-button button">
-      <img src="./remove.svg" class="delete-button__image" alt="Delete button">
-    </button>`;
+  const saveButton = listItem.querySelector('.task__edit-button');
+  const inputText = listItem.querySelector('.task__input').value;
+
+  if (saveButton.innerText === "Save") {
+    labelText.textContent = inputText;
+    listItem.id = 'uncompleted-task';
+    listItem.innerHTML = 
+      `<input class="task__checkbox" type="checkbox">
+      <label class="task__label">${inputText}</label>
+      <input type="text" value="${inputText}" class="task__input">
+      <button class="task__edit-button button">Edit</button>
+      <button class="task__delete-button button">
+        <img src="./remove.svg" class="delete-button__image" alt="Delete button">
+      </button>`;
+  } else {
+    listItem.id = 'edited-task';
+    listItem.innerHTML = 
+      `<input class="task__checkbox" type="checkbox">
+      <label class="task__label">${labelText}</label>
+      <input type="text" value="${labelText}" class="task__input">
+      <button class="task__edit-button button">Save</button>
+      <button class="task__delete-button button">
+        <img src="./remove.svg" class="delete-button__image" alt="Delete button">
+      </button>`;
+  }
+
   return listItem;
-
 };
-
 
 //Delete task.
 const deleteTask = function (e) {
   
   const listItem = e.target.closest('.task-list__item');
-  //Remove the parent list item from the ul.
   setTimeout(function() {
     listItem.parentNode.removeChild(listItem);
   }, 500);
   
 }
+
+//Mark task completed
+const taskCompleted = function (e) {
+  
+  const listItem = e.target.closest('.task-list__item');
+  setTimeout(function() {
+    listItem.parentNode.removeChild(listItem);
+    completedTasksHolder.appendChild(listItem);
+  }, 500);
+
+}
+
+const taskUnCompleted = function (e) {
+  
+  const listItem = e.target.closest('.task-list__item');
+  setTimeout(function() {
+    listItem.parentNode.removeChild(listItem);
+    uncompleteTaskHolder.appendChild(listItem);
+  }, 500);
+
+}
+
 document.addEventListener('click', function(e) {
   
-  // Check if the event target is an edit button
   if (e.target.classList.contains('task__edit-button')) {
     editTask(e);
-  } else if( e.target.classList.contains('task__delete-button') || e.target.classList.contains('delete-button__image')) {
+  } else if( e.target.classList.contains('task__delete-button') || 
+              e.target.classList.contains('delete-button__image')) {
     deleteTask(e)
+  } else if(e.target.classList.contains('task__checkbox')) {
+    if (e.target.checked) {
+      taskCompleted(e)
+    } else {
+      taskUnCompleted(e)
+    }
   }
+
 });
 
-/*
-//Mark task completed
-const taskCompleted = function () {
-  console.log("Complete Task...");
-
-  //Append the task list item to the #completed-tasks
-  const listItem = this.parentNode;
-  completedTasksHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskIncomplete);
-
-}
 
 
-const taskIncomplete = function () {
-  console.log("Incomplete Task...");
-  //Mark task as incomplete.
-  //When the checkbox is unchecked
-  //Append the task list item to the #incompleteTasks.
-  const listItem = this.parentNode;
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
-}
-
-
-
-const ajaxRequest = function () {
-  console.log("AJAX Request");
-}
-
-//The glue to hold it all together.
-
-//Set the click handler to the addTask function.
-addButton.onclick = addTask;
-*/
 
 /*
 addButton.addEventListener("click", ajaxRequest);
