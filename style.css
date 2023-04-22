@@ -147,7 +147,7 @@ li {
   display: none;
 }
 
-.task-list__item#completed-tasks .task__input {
+.task-list__item#completed-task .task__input {
   display: none;
 }
 

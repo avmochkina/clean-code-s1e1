@@ -34,32 +34,33 @@ addButton.addEventListener("click", addTask);
 //Edit an existing task.
 const editTask = function(e) {
   const listItem = e.target.closest('.task-list__item');
-  const labelText = listItem.querySelector('.task__label').innerText;
-  const saveButton = listItem.querySelector('.task__edit-button');
-  const inputText = listItem.querySelector('.task__input').value;
+  let labelText = listItem.querySelector('.task__label').innerText;
+  const input = listItem.querySelector('.task__input');
+  const checkbox = listItem.querySelector('.task__checkbox');
+  const isEdited = listItem.querySelector('.task__edit-button').innerText;
+  const isCompleted = checkbox.checked;
 
-  if (saveButton.innerText === "Save") {
-    labelText.textContent = inputText;
-    listItem.id = 'uncompleted-task';
-    listItem.innerHTML = 
-      `<input class="task__checkbox" type="checkbox">
-      <label class="task__label">${inputText}</label>
-      <input type="text" value="${inputText}" class="task__input">
-      <button class="task__edit-button button">Edit</button>
-      <button class="task__delete-button button">
-        <img src="./remove.svg" class="delete-button__image" alt="Delete button">
-      </button>`;
-  } else {
+  if (isEdited === 'Edit') {
     listItem.id = 'edited-task';
-    listItem.innerHTML = 
-      `<input class="task__checkbox" type="checkbox">
-      <label class="task__label">${labelText}</label>
-      <input type="text" value="${labelText}" class="task__input">
-      <button class="task__edit-button button">Save</button>
-      <button class="task__delete-button button">
-        <img src="./remove.svg" class="delete-button__image" alt="Delete button">
-      </button>`;
+    input.value =  labelText;
+  } else if(isEdited === 'Save' && isCompleted) {
+    console.log(input.value)
+    listItem.id = 'completed-task';
+    labelText = input.value;
+  } else {
+    listItem.id = 'uncompleted-task';
+    labelText = input.value;
   }
+
+  listItem.innerHTML = `
+    <input class="task__checkbox" type="checkbox" ${isCompleted ? 'checked' : ''}>
+    <label class="task__label">${labelText}</label>
+    <input type="text" value="${labelText}" class="task__input">
+    <button class="task__edit-button button">${isEdited === 'Edit' ? 'Save' : 'Edit'}</button>
+    <button class="task__delete-button button">
+      <img src="./remove.svg" class="delete-button__image" alt="Delete button">
+    </button>
+  `;
 
   return listItem;
 };
@@ -80,6 +81,9 @@ const taskCompleted = function (e) {
   const listItem = e.target.closest('.task-list__item');
   setTimeout(function() {
     listItem.parentNode.removeChild(listItem);
+    listItem.setAttribute('id', 'completed-task');
+    const label = listItem.querySelector('.task__label');
+    label.classList.add('task__label_completed');
     completedTasksHolder.appendChild(listItem);
   }, 500);
 
@@ -90,6 +94,9 @@ const taskUnCompleted = function (e) {
   const listItem = e.target.closest('.task-list__item');
   setTimeout(function() {
     listItem.parentNode.removeChild(listItem);
+    listItem.setAttribute('id', 'uncompleted-task');
+    const label = listItem.querySelector('.task__label');
+    label.classList.remove('task__label_completed');
     uncompleteTaskHolder.appendChild(listItem);
   }, 500);
 
@@ -111,52 +118,3 @@ document.addEventListener('click', function(e) {
   }
 
 });
-
-
-
-
-/*
-addButton.addEventListener("click", ajaxRequest);
-
-const bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
-  console.log("bind list item events");
-  //select ListItems children
-  const checkBox = taskListItem.querySelector("input[type=checkbox]");
-  const editButton = taskListItem.querySelector("button.edit");
-  const deleteButton = taskListItem.querySelector("button.delete");
-
-
-  //Bind editTask to edit button.
-  editButton.onclick = editTask;
-  //Bind deleteTask to delete button.
-  deleteButton.onclick = deleteTask;
-  //Bind taskCompleted to checkBoxEventHandler.
-  checkBox.onchange = checkBoxEventHandler;
-}
-
-//cycle over incompleteTaskHolder ul list items
-//for each list item
-for (const i = 0; i < incompleteTaskHolder.children.length; i++) {
-
-  //bind events to list items chldren(tasksCompleted)
-  bindTaskEvents(incompleteTaskHolder.children[i], taskCompleted);
-}
-
-
-
-
-//cycle over completedTasksHolder ul list items
-for (const i = 0; i < completedTasksHolder.children.length; i++) {
-  //bind events to list items chldren(tasksIncompleted)
-  bindTaskEvents(completedTasksHolder.children[i], taskIncomplete);
-}
-
-
-
-
-// Issues with usability don't get seen until they are in front of a human tester.
-
-//prevent creation of empty tasks.
-
-//Change edit to save when you are in edit mode.
-*/
